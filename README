@@ -12,7 +12,7 @@ range of revisions to diff:
   5) git diffall <commit>..<commit>: same as above
   6) git diffall <commit>...<commit>: show the changes on the branch containing and up to the second , starting at a common ancestor of both <commit>
 
-Note: all forms take an optional path limiter [--] [<path>]
+Note: all forms take an optional path limiter [--] [<path>*]
 
 This script is based on an example provided by Thomas Rast on the Git list [1]:
 [1] http://thread.gmane.org/gmane.comp.version-control.git/124807
