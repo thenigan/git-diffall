@@ -5,11 +5,9 @@
 # the external diff tool specified in the 'diff.tool' configuration
 # option.
 
-USAGE='<options> <commit>{0,2} -- <path>*
+USAGE='[--cached] <commit>{0,2} -- <path>*
 
---cached  Compare to the index rather than the working tree
-commit    SHA1 of a commit
-path      Limit the diff to the specified paths
+    --cached  Compare to the index rather than the working tree
 '
 
 . git-sh-setup
