@@ -27,7 +27,7 @@ cd_to_toplevel      # needed to access tar utility
 if [ -z $(which mktemp) ]; then
     tmp=/tmp/git-diffall-tmp
 else
-    tmp="$(mktemp -d)"
+    tmp="$(mktemp -d -t tmp.XXXXXX)"
 fi
 mkdir -p "$tmp" "$tmp"/a "$tmp"/b
 
