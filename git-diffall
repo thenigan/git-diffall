@@ -121,27 +121,45 @@ fi
 # Populate the tmp/b directory with the files to be compared
 if [ -n "$right" ]; then
 	while read name; do
-		mkdir -p "$tmp"/b/"$(dirname "$name")"
-		git show "$right":"$name" > "$tmp"/b/"$name"
+		ls_list=$(git ls-tree $right $name)
+		if [ -n "$ls_list" ]; then
+			mkdir -p "$tmp"/b/"$(dirname "$name")"
+			git show "$right":"$name" > "$tmp"/b/"$name" || true
+		fi
 	done < "$tmp"/filelist
 elif [ -n "$compare_staged" ]; then
 	while read name; do
-		mkdir -p "$tmp"/b/"$(dirname "$name")"
-		git show :"$name" > "$tmp"/b/"$name"
+		ls_list=$(git ls-files -- $name)
+		if [ -n "$ls_list" ]; then
+			mkdir -p "$tmp"/b/"$(dirname "$name")"
+			git show :"$name" > "$tmp"/b/"$name"
+		fi
 	done < "$tmp"/filelist
 else
-    tar -c -T "$tmp"/filelist | (cd "$tmp"/b && tar -x)
+	if [ -n "$(which gnutar)" ]; then
+		gnutar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/b && gnutar -x)
+	else
+    		tar -c -T "$tmp"/filelist | (cd "$tmp"/b && tar -x)
+	fi
 fi
 
 # Populate the tmp/a directory with the files to be compared
 while read name; do
-	mkdir -p "$tmp"/a/"$(dirname "$name")"
     if [ -n "$left" ]; then
-	    git show "$left":"$name" > "$tmp"/a/"$name"
+	ls_list=$(git ls-tree $left $name)
+	if [ -n "$ls_list" ]; then
+		mkdir -p "$tmp"/a/"$(dirname "$name")"
+		git show "$left":"$name" > "$tmp"/a/"$name" || true
+	fi
     else
         if [ -n "$compare_staged" ]; then
-            git show HEAD:"$name" > "$tmp"/a/"$name"
+	    ls_list=$(git ls-tree HEAD $name)
+	    if [ -n "$ls_list" ]; then
+	        mkdir -p "$tmp"/a/"$(dirname "$name")"
+                git show HEAD:"$name" > "$tmp"/a/"$name"
+            fi
         else
+	    mkdir -p "$tmp"/a/"$(dirname "$name")"
             git show :"$name" > "$tmp"/a/"$name"
         fi
     fi
