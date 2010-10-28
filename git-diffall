@@ -139,7 +139,7 @@ else
     if [ -n "$(which gnutar)" ]; then
         gnutar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/b && gnutar -x)
     else
-        tar -c -T "$tmp"/filelist | (cd "$tmp"/b && tar -x)
+        tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/b && tar -x)
     fi
 fi
 
