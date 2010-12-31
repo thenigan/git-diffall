@@ -12,7 +12,7 @@ commit    SHA1 of a commit
 path      Limit the diff to the specified paths
 '
 
-. git-sh-setup
+. "$(git --exec-path)/git-sh-setup"
 
 if [ -z $(git config --get diff.tool) ]; then
     echo "Error: The 'diff.tool' configuration option must be set."
