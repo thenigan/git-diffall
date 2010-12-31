@@ -146,21 +146,21 @@ fi
 # Populate the tmp/a directory with the files to be compared
 while read name; do
     if [ -n "$left" ]; then
-    ls_list=$(git ls-tree $left $name)
-    if [ -n "$ls_list" ]; then
-        mkdir -p "$tmp"/a/"$(dirname "$name")"
-        git show "$left":"$name" > "$tmp"/a/"$name" || true
-    fi
-    else
-        if [ -n "$compare_staged" ]; then
-        ls_list=$(git ls-tree HEAD $name)
+        ls_list=$(git ls-tree $left $name)
         if [ -n "$ls_list" ]; then
             mkdir -p "$tmp"/a/"$(dirname "$name")"
-            git show HEAD:"$name" > "$tmp"/a/"$name"
-            fi
-        else
-        mkdir -p "$tmp"/a/"$(dirname "$name")"
-            git show :"$name" > "$tmp"/a/"$name"
+            git show "$left":"$name" > "$tmp"/a/"$name" || true
+        fi
+    else
+        if [ -n "$compare_staged" ]; then
+            ls_list=$(git ls-tree HEAD $name)
+            if [ -n "$ls_list" ]; then
+                mkdir -p "$tmp"/a/"$(dirname "$name")"
+                git show HEAD:"$name" > "$tmp"/a/"$name"
+                fi
+            else
+                mkdir -p "$tmp"/a/"$(dirname "$name")"
+                    git show :"$name" > "$tmp"/a/"$name"
         fi
     fi
 done < "$tmp"/filelist
@@ -175,4 +175,3 @@ cleanup () {
 }
 
 trap cleanup EXIT
-
