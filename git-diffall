@@ -36,7 +36,7 @@ right=
 paths=
 path_sep=
 compare_staged=
-common_anscestor=
+common_ancestor=
 
 while test $# != 0; do
     case "$1" in
@@ -59,7 +59,7 @@ while test $# != 0; do
         *...*)
             left=${1%...*}
             right=${1#*...}
-            common_anscestor=1
+            common_ancestor=1
             ;;
         *..*)
             left=${1%..*}
@@ -94,7 +94,7 @@ done
 if [ -n "$left" ] && [ -n "$right" ]; then
     if [ -n "$compare_staged" ]; then
         usage
-    elif [ -n "$common_anscestor" ]; then
+    elif [ -n "$common_ancestor" ]; then
         git diff --name-only "$left"..."$right" -- "$paths" > "$tmp"/filelist
     else
         git diff --name-only "$left" "$right" -- "$paths" > "$tmp"/filelist
