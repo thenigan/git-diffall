@@ -12,6 +12,7 @@ commit    SHA1 of a commit
 path      Limit the diff to the specified paths
 '
 
+SUBDIRECTORY_OK=1
 . "$(git --exec-path)/git-sh-setup"
 
 if [ -z $(git config --get diff.tool) ]; then
@@ -20,7 +21,13 @@ if [ -z $(git config --get diff.tool) ]; then
 fi
 
 start_dir=$(pwd)
-cd_to_toplevel      # needed to access tar utility
+
+# needed to access tar utility
+cdup=$(git rev-parse --show-cdup) &&
+cd "$cdup" || {
+    echo >&2 "Cannot chdir to $cdup, the toplevel of the working tree"
+    exit 1
+}
 
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
