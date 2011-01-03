@@ -10,7 +10,8 @@ USAGE='[--cached] <commit>{0,2} -- <path>*
     --cached  Compare to the index rather than the working tree
 '
 
-. git-sh-setup
+SUBDIRECTORY_OK=1
+. "$(git --exec-path)/git-sh-setup"
 
 if [ -z $(git config --get diff.tool) ]; then
     echo "Error: The 'diff.tool' configuration option must be set."
@@ -18,7 +19,13 @@ if [ -z $(git config --get diff.tool) ]; then
 fi
 
 start_dir=$(pwd)
-cd_to_toplevel      # needed to access tar utility
+
+# needed to access tar utility
+cdup=$(git rev-parse --show-cdup) &&
+cd "$cdup" || {
+    echo >&2 "Cannot chdir to $cdup, the toplevel of the working tree"
+    exit 1
+}
 
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
@@ -34,7 +41,7 @@ right=
 paths=
 path_sep=
 compare_staged=
-common_anscestor=
+common_ancestor=
 
 while test $# != 0; do
     case "$1" in
@@ -57,7 +64,7 @@ while test $# != 0; do
         *...*)
             left=${1%...*}
             right=${1#*...}
-            common_anscestor=1
+            common_ancestor=1
             ;;
         *..*)
             left=${1%..*}
@@ -92,7 +99,7 @@ done
 if [ -n "$left" ] && [ -n "$right" ]; then
     if [ -n "$compare_staged" ]; then
         usage
-    elif [ -n "$common_anscestor" ]; then
+    elif [ -n "$common_ancestor" ]; then
         git diff --name-only "$left"..."$right" -- "$paths" > "$tmp"/filelist
     else
         git diff --name-only "$left" "$right" -- "$paths" > "$tmp"/filelist
@@ -144,21 +151,21 @@ fi
 # Populate the tmp/a directory with the files to be compared
 while read name; do
     if [ -n "$left" ]; then
-    ls_list=$(git ls-tree $left $name)
-    if [ -n "$ls_list" ]; then
-        mkdir -p "$tmp"/a/"$(dirname "$name")"
-        git show "$left":"$name" > "$tmp"/a/"$name" || true
-    fi
-    else
-        if [ -n "$compare_staged" ]; then
-        ls_list=$(git ls-tree HEAD $name)
+        ls_list=$(git ls-tree $left $name)
         if [ -n "$ls_list" ]; then
             mkdir -p "$tmp"/a/"$(dirname "$name")"
-            git show HEAD:"$name" > "$tmp"/a/"$name"
-            fi
-        else
-        mkdir -p "$tmp"/a/"$(dirname "$name")"
-            git show :"$name" > "$tmp"/a/"$name"
+            git show "$left":"$name" > "$tmp"/a/"$name" || true
+        fi
+    else
+        if [ -n "$compare_staged" ]; then
+            ls_list=$(git ls-tree HEAD $name)
+            if [ -n "$ls_list" ]; then
+                mkdir -p "$tmp"/a/"$(dirname "$name")"
+                git show HEAD:"$name" > "$tmp"/a/"$name"
+                fi
+            else
+                mkdir -p "$tmp"/a/"$(dirname "$name")"
+                    git show :"$name" > "$tmp"/a/"$name"
         fi
     fi
 done < "$tmp"/filelist
@@ -173,4 +180,3 @@ cleanup () {
 }
 
 trap cleanup EXIT
-
