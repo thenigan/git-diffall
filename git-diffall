@@ -187,7 +187,8 @@ while read name; do
 done < "$tmp"/filelist
 
 cd "$tmp"
-$(git config --get diff.tool) "$left_dir" "$right_dir"
+TOOL=$(git config --get diff.tool)
+"$(git config --get difftool.$TOOL.path)" "$left_dir" "$right_dir"
 
 # On exit, remove the tmp directory
 cleanup () {
