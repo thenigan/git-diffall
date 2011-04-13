@@ -188,7 +188,11 @@ done < "$tmp"/filelist
 
 cd "$tmp"
 TOOL=$(git config --get diff.tool)
-"$(git config --get difftool.$TOOL.path)" "$left_dir" "$right_dir"
+DIFFTOOL=$(git config --get difftool.$TOOL.path)
+if [ -z "$DIFFTOOL" ]; then
+	DIFFTOOL=$TOOL
+fi
+"$DIFFTOOL" "$left_dir" "$right_dir"
 
 # On exit, remove the tmp directory
 cleanup () {
