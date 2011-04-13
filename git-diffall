@@ -12,6 +12,8 @@ USAGE='[--cached] <commit>{0,2} -- <path>*
 
 SUBDIRECTORY_OK=1
 . "$(git --exec-path)/git-sh-setup"
+TOOL_MODE=diff
+. "$(git --exec-path)/git-mergetool--lib"
 
 if [ -z $(git config --get diff.tool) ]; then
     echo "Error: The 'diff.tool' configuration option must be set."
@@ -187,12 +189,9 @@ while read name; do
 done < "$tmp"/filelist
 
 cd "$tmp"
-TOOL=$(git config --get diff.tool)
-DIFFTOOL=$(git config --get difftool.$TOOL.path)
-if [ -z "$DIFFTOOL" ]; then
-	DIFFTOOL=$TOOL
-fi
-"$DIFFTOOL" "$left_dir" "$right_dir"
+LOCAL="$left_dir"
+REMOTE="$right_dir"
+run_merge_tool araxis false
 
 # On exit, remove the tmp directory
 cleanup () {
