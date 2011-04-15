@@ -5,9 +5,12 @@
 # the external diff tool specified in the 'diff.tool' configuration
 # option.
 
-USAGE='[--cached] <commit>{0,2} -- <path>*
+USAGE='[--cached] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
 
     --cached  Compare to the index rather than the working tree
+
+    -x=<command>
+    --extcmd=<command>  Specify a custom command for viewing diffs. git-diffall ignores the configured defaults and runs $command $LOCAL $REMOTE when this option is specified. Additionally, $BASE is set in the environment.
 '
 
 SUBDIRECTORY_OK=1
@@ -48,6 +51,7 @@ compare_staged=
 common_ancestor=
 left_dir=
 right_dir=
+diff_tool=
 
 while test $# != 0; do
     case "$1" in
@@ -56,6 +60,11 @@ while test $# != 0; do
         ;;
     --cached)
         compare_staged=1
+        ;;
+    -x|--e|--ex|--ext|--extc|--extcm|--extcmd)
+        diff_tool=$2
+        shift
+        echo "$diff_tool"
         ;;
     --)
         path_sep=1
@@ -194,7 +203,12 @@ cd "$tmp"
 LOCAL="$left_dir"
 REMOTE="$right_dir"
 
-run_merge_tool "$merge_tool" false
+if [ -n "$diff_tool" ]; then
+    export BASE
+    eval $diff_tool '"$LOCAL"' '"$REMOTE"'
+else
+    run_merge_tool "$merge_tool" false
+fi
 
 # On exit, remove the tmp directory
 cleanup () {
