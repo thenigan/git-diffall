@@ -1,5 +1,5 @@
 #!/bin/sh -e
-# Copyright 2010, Tim Henigan <tim.henigan@gmail.com>
+# Copyright 2010 - 2011, Tim Henigan <tim.henigan@gmail.com>
 #
 # Perform a directory diff between commits in the repository using
 # the external diff tool specified in the 'diff.tool' configuration
@@ -16,11 +16,13 @@ USAGE='[--cached] [--copy-back] <commit>{0,2} -- <path>*
 
 SUBDIRECTORY_OK=1
 . "$(git --exec-path)/git-sh-setup"
+
 TOOL_MODE=diff
 . "$(git --exec-path)/git-mergetool--lib"
 
-if [ -z $(git config --get diff.tool) ]; then
-    echo "Error: The 'diff.tool' configuration option must be set."
+merge_tool="$(get_merge_tool)"
+if [ -z "$merge_tool" ]; then
+    echo "Error: Either the 'diff.tool' or 'merge.tool' option must be set."
     usage
 fi
 
@@ -50,6 +52,7 @@ compare_staged=
 common_ancestor=
 left_dir=
 right_dir=
+diff_tool=
 copy_back=
 
 while test $# != 0; do
@@ -62,6 +65,11 @@ while test $# != 0; do
         ;;
     --copy-back)
         copy_back=1
+        ;;
+    -x|--e|--ex|--ext|--extc|--extcm|--extcmd)
+        diff_tool=$2
+        shift
+        echo "$diff_tool"
         ;;
     --)
         path_sep=1
@@ -201,28 +209,15 @@ while read name; do
     fi
 done < "$tmp"/filelist
 
-# get the required merge tool
-# code copied from git-difftool--helper.sh
-# TODO: refactor it into a single function
-use_ext_cmd () {
-	test -n "$GIT_DIFFTOOL_EXTCMD"
-}
-if ! use_ext_cmd; then
-	if test -n "$GIT_DIFF_TOOL"; then
-		merge_tool="$GIT_DIFF_TOOL"
-	else
-		merge_tool="$(get_merge_tool)" || exit
-	fi
-fi
-
 cd "$tmp"
 LOCAL="$left_dir"
 REMOTE="$right_dir"
-if use_ext_cmd; then
-	export BASE
-	eval $GIT_DIFFTOOL_EXTCMD '"$LOCAL"' '"$REMOTE"'
+
+if [ -n "$diff_tool" ]; then
+    export BASE
+    eval $diff_tool '"$LOCAL"' '"$REMOTE"'
 else
-	run_merge_tool "$merge_tool" false
+    run_merge_tool "$merge_tool" false
 fi
 
 # On exit, remove the tmp directory
