@@ -5,12 +5,12 @@ to determine what diff viewer is used.
 This script is compatible with all the forms used to specify a
 range of revisions to diff:
 
-  1) git diffall: shows diff between working tree and staged changes
-  2) git diffall --cached [<commit>]: shows diff between staged changes and HEAD (or other named commit)
-  3) git diffall <commit>: shows diff between working tree and named commit
-  4) git diffall <commit> <commit>: show diff between two named commits
-  5) git diffall <commit>..<commit>: same as above
-  6) git diffall <commit>...<commit>: show the changes on the branch containing and up to the second , starting at a common ancestor of both <commit>
+  1. git diffall: shows diff between working tree and staged changes
+  2. git diffall --cached [<commit>]: shows diff between staged changes and HEAD (or other named commit)
+  3. git diffall <commit>: shows diff between working tree and named commit
+  4. git diffall <commit> <commit>: show diff between two named commits
+  5. git diffall <commit>..<commit>: same as above
+  6. git diffall <commit>...<commit>: show the changes on the branch containing and up to the second , starting at a common ancestor of both <commit>
 
 Note: all forms take an optional path limiter [--] [<path>*]
 
