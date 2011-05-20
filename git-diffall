@@ -5,9 +5,14 @@
 # the external diff tool specified in the 'diff.tool' configuration
 # option.
 
-USAGE='[--cached] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
+USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
 
     --cached  Compare to the index rather than the working tree
+
+    --copy-back  After invoking diff tool, copies back the files to
+                 the working tree, in case they were modified.
+                 Implies that the right-hand commit is the working
+                 directory.
 
     -x=<command>
     --extcmd=<command>  Specify a custom command for viewing diffs. git-diffall ignores the configured defaults and runs $command $LOCAL $REMOTE when this option is specified. Additionally, $BASE is set in the environment.
@@ -52,6 +57,7 @@ common_ancestor=
 left_dir=
 right_dir=
 diff_tool=
+copy_back=
 
 while test $# != 0; do
     case "$1" in
@@ -60,6 +66,9 @@ while test $# != 0; do
         ;;
     --cached)
         compare_staged=1
+        ;;
+    --copy-back)
+        copy_back=1
         ;;
     -x|--e|--ex|--ext|--extc|--extcm|--extcmd)
         diff_tool=$2
@@ -144,6 +153,11 @@ else
     fi
 fi
 
+if [ -n "$copy_back" ] &&  [ "$right_dir" != "working_tree" ]; then
+    echo "Copying back the files is only possible when comparing commits to working tree"
+    exit 1
+fi
+
 # Exit immediately if there are no diffs
 if [ ! -s "$tmp"/filelist ]; then
     exit 0
@@ -213,6 +227,14 @@ fi
 # On exit, remove the tmp directory
 cleanup () {
     cd "$start_dir"
+    git_top_dir=$(git rev-parse --show-toplevel)
+    #if --copy-back was specified, copy all files back to git root
+    # directory, in case they were changed
+    if [ -n "$copy_back" ]; then
+        find "$tmp/$right_dir" -type f|while read file; do
+            cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
+        done
+    fi
     rm -rf "$tmp"
 }
 
