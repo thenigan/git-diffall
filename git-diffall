@@ -7,15 +7,19 @@
 
 USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
 
-    --cached  Compare to the index rather than the working tree
+    --cached     Compare to the index rather than the working tree.
 
-    --copy-back  After invoking diff tool, copies back the files to
-                 the working tree, in case they were modified.
-                 Implies that the right-hand commit is the working
-                 directory.
+    --copy-back  Copy files back to the working tree when the diff
+                 tool exits (in case they were modified by the
+                 user).  This option is only valid if the diff
+                 compared with the working tree.
 
     -x=<command>
-    --extcmd=<command>  Specify a custom command for viewing diffs. git-diffall ignores the configured defaults and runs $command $LOCAL $REMOTE when this option is specified. Additionally, $BASE is set in the environment.
+    --extcmd=<command>  Specify a custom command for viewing diffs.
+                 git-diffall ignores the configured defaults and
+                 runs $command $LOCAL $REMOTE when this option is
+                 specified. Additionally, $BASE is set in the
+                 environment.
 '
 
 SUBDIRECTORY_OK=1
