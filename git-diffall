@@ -228,17 +228,19 @@ else
     run_merge_tool "$merge_tool" false
 fi
 
-# On exit, remove the tmp directory
+# This function is called on exit
 cleanup () {
     cd "$start_dir"
-    git_top_dir=$(git rev-parse --show-toplevel)
-    #if --copy-back was specified, copy all files back to git root
-    # directory, in case they were changed
-    if [ -n "$copy_back" ]; then
+
+    # Copy files back to the working dir, if requested
+    if [ -n "$copy_back" ] && [ "$right_dir" == "working_tree" ]; then
+        git_top_dir=$(git rev-parse --show-toplevel)
         find "$tmp/$right_dir" -type f|while read file; do
             cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
         done
     fi
+
+    # Remove the tmp directory
     rm -rf "$tmp"
 }
 
