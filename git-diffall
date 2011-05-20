@@ -157,14 +157,14 @@ else
     fi
 fi
 
-if [ -n "$copy_back" ] &&  [ "$right_dir" != "working_tree" ]; then
-    echo "Copying back the files is only possible when comparing commits to working tree"
-    exit 1
-fi
-
 # Exit immediately if there are no diffs
 if [ ! -s "$tmp"/filelist ]; then
     exit 0
+fi
+
+if [ -n "$copy_back" ] && [ "$right_dir" != "working_tree" ]; then
+    echo "--copy-back is only valid when diff includes the working tree."
+    exit 1
 fi
 
 # Create the named tmp directories that will hold the files to be compared
