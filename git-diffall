@@ -4,6 +4,10 @@
 # Perform a directory diff between commits in the repository using
 # the external diff tool specified in the 'diff.tool' configuration
 # option.
+#
+# NOTE: When making changes to this script, only use POSIX features.
+# The 'checkbashisms' script provides a good test.  This perl script
+# may be found at http://sourceforge.net/projects/checkbaskisms
 
 USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
 
@@ -233,7 +237,7 @@ cleanup () {
     cd "$start_dir"
 
     # Copy files back to the working dir, if requested
-    if [ -n "$copy_back" ] && [ "$right_dir" == "working_tree" ]; then
+    if [ -n "$copy_back" ] && [ "$right_dir" = "working_tree" ]; then
         git_top_dir=$(git rev-parse --show-toplevel)
         find "$tmp/$right_dir" -type f|while read file; do
             cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
