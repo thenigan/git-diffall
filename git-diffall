@@ -49,7 +49,7 @@ cd "$cdup" || {
 
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
-if [ -z $(which mktemp) ]; then
+if [ -z $(which mktemp 2>/dev/null) ]; then
     tmp=/tmp/git-diffall-tmp
 else
     tmp="$(mktemp -d -t tmp.XXXXXX)"
@@ -192,7 +192,7 @@ elif [ -n "$compare_staged" ]; then
         fi
     done < "$tmp"/filelist
 else
-    if [ -n "$(which gnutar)" ]; then
+    if [ -n "$(which gnutar 2>/dev/null)" ]; then
         gnutar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && gnutar -x)
     else
         tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && tar -x)
