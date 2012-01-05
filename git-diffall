@@ -1,5 +1,5 @@
 #!/bin/bash -e
-# Copyright 2010 - 2011, Tim Henigan <tim.henigan@gmail.com>
+# Copyright 2010 - 2012, Tim Henigan <tim.henigan@gmail.com>
 #
 # Perform a directory diff between commits in the repository using
 # the external diff tool specified in the 'diff.tool' configuration
