@@ -135,29 +135,29 @@ if [ -n "$left" ] && [ -n "$right" ]; then
     if [ -n "$compare_staged" ]; then
         usage
     elif [ -n "$common_ancestor" ]; then
-        git diff --name-only "$left"..."$right" -- "$paths" > "$tmp"/filelist
+        git diff --name-only "$left"..."$right" -- $paths > "$tmp"/filelist
     else
-        git diff --name-only "$left" "$right" -- "$paths" > "$tmp"/filelist
+        git diff --name-only "$left" "$right" -- $paths > "$tmp"/filelist
     fi
 elif [ -n "$left" ]; then
     left_dir="cmt-`git rev-parse --short $left`"
 
     if [ -n "$compare_staged" ]; then
         right_dir="staged"
-        git diff --name-only --cached "$left" -- "$paths" > "$tmp"/filelist
+        git diff --name-only --cached "$left" -- $paths > "$tmp"/filelist
     else
         right_dir="working_tree"
-        git diff --name-only "$left" -- "$paths" > "$tmp"/filelist
+        git diff --name-only "$left" -- $paths > "$tmp"/filelist
     fi
 else
     left_dir="HEAD"
 
     if [ -n "$compare_staged" ]; then
         right_dir="staged"
-        git diff --name-only --cached -- "$paths" > "$tmp"/filelist
+        git diff --name-only --cached -- $paths > "$tmp"/filelist
     else
         right_dir="working_tree"
-        git diff --name-only -- "$paths" > "$tmp"/filelist
+        git diff --name-only -- $paths > "$tmp"/filelist
     fi
 fi
 
