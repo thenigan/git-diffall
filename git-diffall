@@ -33,7 +33,8 @@ TOOL_MODE=diff
 . "$(git --exec-path)/git-mergetool--lib"
 
 merge_tool="$(get_merge_tool)"
-if [ -z "$merge_tool" ]; then
+if test -z "$merge_tool"
+then
     echo "Error: Either the 'diff.tool' or 'merge.tool' option must be set."
     usage
 fi
@@ -49,7 +50,8 @@ cd "$cdup" || {
 
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
-if [ -z $(which mktemp 2>/dev/null) ]; then
+if test -z $(which mktemp 2>/dev/null)
+then
     tmp=/tmp/git-diffall-tmp
 else
     tmp="$(mktemp -d -t tmp.XXXXXX)"
@@ -67,7 +69,8 @@ right_dir=
 diff_tool=
 copy_back=
 
-while test $# != 0; do
+while test $# != 0
+do
     case "$1" in
     -h|--h|--he|--hel|--help)
         usage
@@ -103,18 +106,23 @@ while test $# != 0; do
             right=${1#*..}
             ;;
         *)
-            if [ -n "$path_sep" ]; then
-                if [ -z "$paths" ]; then
+            if test -n "$path_sep"
+            then
+                if test -z "$paths"
+                then
                     paths=$1
                 else
                     paths="$paths $1"
                 fi
-            elif [ -z "$left" ]; then
+            elif test -z "$left"
+            then
                 left=$1
-            elif [ -z "$right" ]; then
+            elif test -z "$right"
+            then
                 right=$1
             else
-                if [ -z "$paths" ]; then
+                if test -z "$paths"
+                then
                     paths=$1
                 else
                     paths="$paths $1"
@@ -128,21 +136,26 @@ while test $# != 0; do
 done
 
 # Determine the set of files which changed
-if [ -n "$left" ] && [ -n "$right" ]; then
+if test -n "$left" && test -n "$right"
+then
     left_dir="cmt-`git rev-parse --short $left`"
     right_dir="cmt-`git rev-parse --short $right`"
 
-    if [ -n "$compare_staged" ]; then
+    if test -n "$compare_staged"
+    then
         usage
-    elif [ -n "$common_ancestor" ]; then
+    elif test -n "$common_ancestor"
+    then
         git diff --name-only "$left"..."$right" -- $paths > "$tmp"/filelist
     else
         git diff --name-only "$left" "$right" -- $paths > "$tmp"/filelist
     fi
-elif [ -n "$left" ]; then
+elif test -n "$left"
+then
     left_dir="cmt-`git rev-parse --short $left`"
 
-    if [ -n "$compare_staged" ]; then
+    if test -n "$compare_staged"
+    then
         right_dir="staged"
         git diff --name-only --cached "$left" -- $paths > "$tmp"/filelist
     else
@@ -152,7 +165,8 @@ elif [ -n "$left" ]; then
 else
     left_dir="HEAD"
 
-    if [ -n "$compare_staged" ]; then
+    if test -n "$compare_staged"
+    then
         right_dir="staged"
         git diff --name-only --cached -- $paths > "$tmp"/filelist
     else
@@ -162,11 +176,13 @@ else
 fi
 
 # Exit immediately if there are no diffs
-if [ ! -s "$tmp"/filelist ]; then
+if test ! -s "$tmp"/filelist
+then
     exit 0
 fi
 
-if [ -n "$copy_back" ] && [ "$right_dir" != "working_tree" ]; then
+if test -n "$copy_back" && test "$right_dir" != "working_tree"
+then
     echo "--copy-back is only valid when diff includes the working tree."
     exit 1
 fi
@@ -175,24 +191,31 @@ fi
 mkdir -p "$tmp"/"$left_dir" "$tmp"/"$right_dir"
 
 # Populate the tmp/right_dir directory with the files to be compared
-if [ -n "$right" ]; then
-    while read name; do
+if test -n "$right"
+then
+    while read name
+    do
         ls_list=$(git ls-tree $right $name)
-        if [ -n "$ls_list" ]; then
+        if test -n "$ls_list"
+    then
             mkdir -p "$tmp"/"$right_dir"/"$(dirname "$name")"
             git show "$right":"$name" > "$tmp"/"$right_dir"/"$name" || true
         fi
     done < "$tmp"/filelist
-elif [ -n "$compare_staged" ]; then
-    while read name; do
+elif test -n "$compare_staged"
+then
+    while read name
+    do
         ls_list=$(git ls-files -- $name)
-        if [ -n "$ls_list" ]; then
+        if test -n "$ls_list"
+    then
             mkdir -p "$tmp"/"$right_dir"/"$(dirname "$name")"
             git show :"$name" > "$tmp"/"$right_dir"/"$name"
         fi
     done < "$tmp"/filelist
 else
-    if [ -n "$(which gnutar 2>/dev/null)" ]; then
+    if test -n "$(which gnutar 2>/dev/null)"
+    then
         gnutar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && gnutar -x)
     else
         tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && tar -x)
@@ -200,23 +223,28 @@ else
 fi
 
 # Populate the tmp/left_dir directory with the files to be compared
-while read name; do
-    if [ -n "$left" ]; then
+while read name
+do
+    if test -n "$left"
+    then
         ls_list=$(git ls-tree $left $name)
-        if [ -n "$ls_list" ]; then
+        if test -n "$ls_list"
+        then
             mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
             git show "$left":"$name" > "$tmp"/"$left_dir"/"$name" || true
         fi
     else
-        if [ -n "$compare_staged" ]; then
+        if test -n "$compare_staged"
+        then
             ls_list=$(git ls-tree HEAD $name)
-            if [ -n "$ls_list" ]; then
+            if test -n "$ls_list"
+            then
                 mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
                 git show HEAD:"$name" > "$tmp"/"$left_dir"/"$name"
                 fi
             else
                 mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
-                    git show :"$name" > "$tmp"/"$left_dir"/"$name"
+                git show :"$name" > "$tmp"/"$left_dir"/"$name"
         fi
     fi
 done < "$tmp"/filelist
@@ -225,7 +253,8 @@ cd "$tmp"
 LOCAL="$left_dir"
 REMOTE="$right_dir"
 
-if [ -n "$diff_tool" ]; then
+if test -n "$diff_tool"
+then
     export BASE
     eval $diff_tool '"$LOCAL"' '"$REMOTE"'
 else
@@ -237,7 +266,8 @@ cleanup () {
     cd "$start_dir"
 
     # Copy files back to the working dir, if requested
-    if [ -n "$copy_back" ] && [ "$right_dir" = "working_tree" ]; then
+    if test -n "$copy_back" && test "$right_dir" = "working_tree"
+    then
         git_top_dir=$(git rev-parse --show-toplevel)
         find "$tmp/$right_dir" -type f|while read file; do
             cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
