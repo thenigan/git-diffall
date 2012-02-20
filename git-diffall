@@ -2,12 +2,7 @@
 # Copyright 2010 - 2012, Tim Henigan <tim.henigan@gmail.com>
 #
 # Perform a directory diff between commits in the repository using
-# the external diff tool specified in the 'diff.tool' configuration
-# option.
-#
-# NOTE: When making changes to this script, only use POSIX features.
-# The 'checkbashisms' script provides a good test.  This perl script
-# may be found at http://sourceforge.net/projects/checkbaskisms
+# the external diff or merge tool specified in the user's config.
 
 USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
 
