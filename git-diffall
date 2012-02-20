@@ -138,8 +138,8 @@ done
 # Determine the set of files which changed
 if test -n "$left" && test -n "$right"
 then
-    left_dir="cmt-`git rev-parse --short $left`"
-    right_dir="cmt-`git rev-parse --short $right`"
+    left_dir="cmt-$(git rev-parse --short $left)"
+    right_dir="cmt-$(git rev-parse --short $right)"
 
     if test -n "$compare_staged"
     then
@@ -152,7 +152,7 @@ then
     fi
 elif test -n "$left"
 then
-    left_dir="cmt-`git rev-parse --short $left`"
+    left_dir="cmt-$(git rev-parse --short $left)"
 
     if test -n "$compare_staged"
     then
