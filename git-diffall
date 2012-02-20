@@ -79,7 +79,6 @@ do
 	-x|--e|--ex|--ext|--extc|--extcm|--extcmd)
 		diff_tool=$2
 		shift
-		echo "$diff_tool"
 		;;
 	--)
 		path_sep=1
