@@ -140,9 +140,9 @@ then
 		usage
 	elif test -n "$common_ancestor"
 	then
-		git diff --name-only "$left"..."$right" -- $paths > "$tmp"/filelist
+		git diff --name-only "$left"..."$right" -- $paths > "$tmp/filelist"
 	else
-		git diff --name-only "$left" "$right" -- $paths > "$tmp"/filelist
+		git diff --name-only "$left" "$right" -- $paths > "$tmp/filelist"
 	fi
 elif test -n "$left"
 then
@@ -151,10 +151,10 @@ then
 	if test -n "$compare_staged"
 	then
 		right_dir="staged"
-		git diff --name-only --cached "$left" -- $paths > "$tmp"/filelist
+		git diff --name-only --cached "$left" -- $paths > "$tmp/filelist"
 	else
 		right_dir="working_tree"
-		git diff --name-only "$left" -- $paths > "$tmp"/filelist
+		git diff --name-only "$left" -- $paths > "$tmp/filelist"
 	fi
 else
 	left_dir="HEAD"
@@ -162,15 +162,15 @@ else
 	if test -n "$compare_staged"
 	then
 		right_dir="staged"
-		git diff --name-only --cached -- $paths > "$tmp"/filelist
+		git diff --name-only --cached -- $paths > "$tmp/filelist"
 	else
 		right_dir="working_tree"
-		git diff --name-only -- $paths > "$tmp"/filelist
+		git diff --name-only -- $paths > "$tmp/filelist"
 	fi
 fi
 
 # Exit immediately if there are no diffs
-if test ! -s "$tmp"/filelist
+if test ! -s "$tmp/filelist"
 then
 	exit 0
 fi
@@ -182,7 +182,7 @@ then
 fi
 
 # Create the named tmp directories that will hold the files to be compared
-mkdir -p "$tmp"/"$left_dir" "$tmp"/"$right_dir"
+mkdir -p "$tmp/$left_dir" "$tmp/$right_dir"
 
 # Populate the tmp/right_dir directory with the files to be compared
 if test -n "$right"
@@ -192,10 +192,10 @@ then
 		ls_list=$(git ls-tree $right $name)
 		if test -n "$ls_list"
 	then
-			mkdir -p "$tmp"/"$right_dir"/"$(dirname "$name")"
-			git show "$right":"$name" > "$tmp"/"$right_dir"/"$name" || true
+			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
+			git show "$right":"$name" > "$tmp/$right_dir/$name" || true
 		fi
-	done < "$tmp"/filelist
+	done < "$tmp/filelist"
 elif test -n "$compare_staged"
 then
 	while read name
@@ -203,16 +203,16 @@ then
 		ls_list=$(git ls-files -- $name)
 		if test -n "$ls_list"
 	then
-			mkdir -p "$tmp"/"$right_dir"/"$(dirname "$name")"
-			git show :"$name" > "$tmp"/"$right_dir"/"$name"
+			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
+			git show :"$name" > "$tmp/$right_dir/$name"
 		fi
-	done < "$tmp"/filelist
+	done < "$tmp/filelist"
 else
 	if test -n "$(which gnutar 2>/dev/null)"
 	then
-		gnutar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && gnutar -x)
+		gnutar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && gnutar -x)
 	else
-		tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp"/"$right_dir" && tar -x)
+		tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp/$right_dir" && tar -x)
 	fi
 fi
 
@@ -224,8 +224,8 @@ do
 		ls_list=$(git ls-tree $left $name)
 		if test -n "$ls_list"
 		then
-			mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
-			git show "$left":"$name" > "$tmp"/"$left_dir"/"$name" || true
+			mkdir -p "$tmp/$left_dir/$(dirname "$name")"
+			git show "$left":"$name" > "$tmp/$left_dir/$name" || true
 		fi
 	else
 		if test -n "$compare_staged"
@@ -233,15 +233,15 @@ do
 			ls_list=$(git ls-tree HEAD $name)
 			if test -n "$ls_list"
 			then
-				mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
-				git show HEAD:"$name" > "$tmp"/"$left_dir"/"$name"
+				mkdir -p "$tmp/$left_dir/$(dirname "$name")"
+				git show HEAD:"$name" > "$tmp/$left_dir/$name"
 			fi
 		else
-				mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
-				git show :"$name" > "$tmp"/"$left_dir"/"$name"
+				mkdir -p "$tmp/$left_dir/$(dirname "$name")"
+				git show :"$name" > "$tmp/$left_dir/$name"
 		fi
 	fi
-done < "$tmp"/filelist
+done < "$tmp/filelist"
 
 cd "$tmp"
 LOCAL="$left_dir"
