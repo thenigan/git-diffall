@@ -202,7 +202,7 @@ else
 	then
 		gnutar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && gnutar -x)
 	else
-		tar --ignore-failed-read -c -T "$tmp"/filelist | (cd "$tmp/$right_dir" && tar -x)
+		tar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && tar -x)
 	fi
 fi
 
