@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh
 # Copyright 2010 - 2012, Tim Henigan <tim.henigan@gmail.com>
 #
 # Perform a directory diff between commits in the repository using
