@@ -48,6 +48,8 @@ cd "$cdup" || {
 tmp="$(mktemp -d -t tmp.XXXXXX 2>/dev/null)" || {
 	tmp=/tmp/git-diffall-tmp
 }
+
+trap 'rm -rf "$tmp" 2>/dev/null' EXIT
 mkdir -p "$tmp"
 
 left=
@@ -240,23 +242,14 @@ else
 	run_merge_tool "$merge_tool" false
 fi
 
-# This function is called on exit
-cleanup () {
+# Copy files back to the working dir, if requested
+if test -n "$copy_back" && test "$right_dir" = "working_tree"
+then
 	cd "$start_dir"
-
-	# Copy files back to the working dir, if requested
-	if test -n "$copy_back" && test "$right_dir" = "working_tree"
-	then
-		git_top_dir=$(git rev-parse --show-toplevel)
-		find "$tmp/$right_dir" -type f |
-		while read file
-		do
-			cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
-		done
-	fi
-
-	# Remove the tmp directory
-	rm -rf "$tmp"
-}
-
-trap cleanup EXIT
+	git_top_dir=$(git rev-parse --show-toplevel)
+	find "$tmp/$right_dir" -type f |
+	while read file
+	do
+		cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
+	done
+fi
