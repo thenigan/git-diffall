@@ -180,7 +180,7 @@ then
 	do
 		ls_list=$(git ls-tree $right $name)
 		if test -n "$ls_list"
-	then
+		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
 			git show "$right":"$name" > "$tmp/$right_dir/$name" || true
 		fi
@@ -191,7 +191,7 @@ then
 	do
 		ls_list=$(git ls-files -- $name)
 		if test -n "$ls_list"
-	then
+		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
 			git show :"$name" > "$tmp/$right_dir/$name"
 		fi
@@ -224,8 +224,8 @@ do
 				git show HEAD:"$name" > "$tmp/$left_dir/$name"
 			fi
 		else
-				mkdir -p "$tmp/$left_dir/$(dirname "$name")"
-				git show :"$name" > "$tmp/$left_dir/$name"
+			mkdir -p "$tmp/$left_dir/$(dirname "$name")"
+			git show :"$name" > "$tmp/$left_dir/$name"
 		fi
 	fi
 done < "$tmp/filelist"
