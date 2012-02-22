@@ -263,7 +263,9 @@ cleanup () {
 	if test -n "$copy_back" && test "$right_dir" = "working_tree"
 	then
 		git_top_dir=$(git rev-parse --show-toplevel)
-		find "$tmp/$right_dir" -type f|while read file; do
+		find "$tmp/$right_dir" -type f |
+		while read file
+		do
 			cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
 		done
 	fi
