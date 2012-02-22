@@ -45,12 +45,9 @@ cd "$cdup" || {
 
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
-if test -z $(which mktemp 2>/dev/null)
-then
+tmp="$(mktemp -d -t tmp.XXXXXX 2>/dev/null)" || {
 	tmp=/tmp/git-diffall-tmp
-else
-	tmp="$(mktemp -d -t tmp.XXXXXX)"
-fi
+}
 mkdir -p "$tmp"
 
 left=
@@ -198,12 +195,10 @@ then
 		fi
 	done < "$tmp/filelist"
 else
-	if test -n "$(which gnutar 2>/dev/null)"
-	then
+	# Mac users have gnutar rather than tar
+	(tar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && tar -x)) || {
 		gnutar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && gnutar -x)
-	else
-		tar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && tar -x)
-	fi
+	}
 fi
 
 # Populate the tmp/left_dir directory with the files to be compared
