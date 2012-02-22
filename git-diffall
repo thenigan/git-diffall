@@ -235,8 +235,8 @@ do
 			then
 				mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
 				git show HEAD:"$name" > "$tmp"/"$left_dir"/"$name"
-				fi
-			else
+			fi
+		else
 				mkdir -p "$tmp"/"$left_dir"/"$(dirname "$name")"
 				git show :"$name" > "$tmp"/"$left_dir"/"$name"
 		fi
