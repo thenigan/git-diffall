@@ -46,11 +46,11 @@ cd "$cdup" || {
 # mktemp is not available on all platforms (missing from msysgit)
 # Use a hard-coded tmp dir if it is not available
 tmp="$(mktemp -d -t tmp.XXXXXX 2>/dev/null)" || {
-	tmp=/tmp/git-diffall-tmp
+	tmp=/git-diffall-tmp.$$
+	mkdir "$tmp" || exit 1
 }
 
 trap 'rm -rf "$tmp" 2>/dev/null' EXIT
-mkdir -p "$tmp"
 
 left=
 right=
