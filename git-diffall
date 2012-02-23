@@ -184,7 +184,7 @@ if test -n "$right"
 then
 	while read name
 	do
-		ls_list=$(git ls-tree $right $name)
+		ls_list=$(git ls-tree $right "$name")
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
@@ -195,7 +195,7 @@ elif test -n "$compare_staged"
 then
 	while read name
 	do
-		ls_list=$(git ls-files -- $name)
+		ls_list=$(git ls-files -- "$name")
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
@@ -214,7 +214,7 @@ while read name
 do
 	if test -n "$left"
 	then
-		ls_list=$(git ls-tree $left $name)
+		ls_list=$(git ls-tree $left "$name")
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$left_dir/$(dirname "$name")"
@@ -223,7 +223,7 @@ do
 	else
 		if test -n "$compare_staged"
 		then
-			ls_list=$(git ls-tree HEAD $name)
+			ls_list=$(git ls-tree HEAD "$name")
 			if test -n "$ls_list"
 			then
 				mkdir -p "$tmp/$left_dir/$(dirname "$name")"
