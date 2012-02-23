@@ -135,9 +135,9 @@ then
 		usage
 	elif test -n "$merge_base"
 	then
-		git diff --name-only "$left"..."$right" -- $paths > "$tmp/filelist"
+		git diff --name-only "$left"..."$right" -- $paths >"$tmp/filelist"
 	else
-		git diff --name-only "$left" "$right" -- $paths > "$tmp/filelist"
+		git diff --name-only "$left" "$right" -- $paths >"$tmp/filelist"
 	fi
 elif test -n "$left"
 then
@@ -146,10 +146,10 @@ then
 	if test -n "$compare_staged"
 	then
 		right_dir="staged"
-		git diff --name-only --cached "$left" -- $paths > "$tmp/filelist"
+		git diff --name-only --cached "$left" -- $paths >"$tmp/filelist"
 	else
 		right_dir="working_tree"
-		git diff --name-only "$left" -- $paths > "$tmp/filelist"
+		git diff --name-only "$left" -- $paths >"$tmp/filelist"
 	fi
 else
 	left_dir="HEAD"
@@ -157,10 +157,10 @@ else
 	if test -n "$compare_staged"
 	then
 		right_dir="staged"
-		git diff --name-only --cached -- $paths > "$tmp/filelist"
+		git diff --name-only --cached -- $paths >"$tmp/filelist"
 	else
 		right_dir="working_tree"
-		git diff --name-only -- $paths > "$tmp/filelist"
+		git diff --name-only -- $paths >"$tmp/filelist"
 	fi
 fi
 
@@ -188,7 +188,7 @@ then
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
-			git show "$right":"$name" > "$tmp/$right_dir/$name" || true
+			git show "$right":"$name" >"$tmp/$right_dir/$name" || true
 		fi
 	done < "$tmp/filelist"
 elif test -n "$compare_staged"
@@ -199,7 +199,7 @@ then
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
-			git show :"$name" > "$tmp/$right_dir/$name"
+			git show :"$name" >"$tmp/$right_dir/$name"
 		fi
 	done < "$tmp/filelist"
 else
@@ -218,7 +218,7 @@ do
 		if test -n "$ls_list"
 		then
 			mkdir -p "$tmp/$left_dir/$(dirname "$name")"
-			git show "$left":"$name" > "$tmp/$left_dir/$name" || true
+			git show "$left":"$name" >"$tmp/$left_dir/$name" || true
 		fi
 	else
 		if test -n "$compare_staged"
@@ -227,11 +227,11 @@ do
 			if test -n "$ls_list"
 			then
 				mkdir -p "$tmp/$left_dir/$(dirname "$name")"
-				git show HEAD:"$name" > "$tmp/$left_dir/$name"
+				git show HEAD:"$name" >"$tmp/$left_dir/$name"
 			fi
 		else
 			mkdir -p "$tmp/$left_dir/$(dirname "$name")"
-			git show :"$name" > "$tmp/$left_dir/$name"
+			git show :"$name" >"$tmp/$left_dir/$name"
 		fi
 	fi
 done < "$tmp/filelist"
