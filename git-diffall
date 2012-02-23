@@ -76,8 +76,14 @@ do
 		copy_back=1
 		;;
 	-x|--e|--ex|--ext|--extc|--extcm|--extcmd)
-		diff_tool=$2
-		shift
+		if test -z $2
+		then
+			echo You must specify the tool for use with --extcmd
+			usage
+		else
+			diff_tool=$2
+			shift
+		fi
 		;;
 	--)
 		path_sep=1
