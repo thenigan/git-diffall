@@ -76,7 +76,7 @@ do
 		copy_back=1
 		;;
 	-x|--e|--ex|--ext|--extc|--extcm|--extcmd)
-		if test -z $2
+		if test $# == 1
 		then
 			echo You must specify the tool for use with --extcmd
 			usage
