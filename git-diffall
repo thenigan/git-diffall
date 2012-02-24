@@ -55,7 +55,7 @@ trap 'rm -rf "$tmp" 2>/dev/null' EXIT
 left=
 right=
 paths=
-path_sep=
+dashdash_seen=
 compare_staged=
 merge_base=
 left_dir=
@@ -86,7 +86,7 @@ do
 		fi
 		;;
 	--)
-		path_sep=1
+		dashdash_seen=1
 		;;
 	-*)
 		echo Invalid option: "$1"
@@ -105,7 +105,7 @@ do
 			right=${1#*..}
 			;;
 		*)
-			if test -n "$path_sep"
+			if test -n "$dashdash_seen"
 			then
 				paths="$paths$1 "
 			elif test -z "$left"
