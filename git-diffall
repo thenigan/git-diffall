@@ -4,7 +4,7 @@
 # Perform a directory diff between commits in the repository using
 # the external diff or merge tool specified in the user's config.
 
-USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} -- <path>*
+USAGE='[--cached] [--copy-back] [-x|--extcmd=<command>] <commit>{0,2} [-- <path>*]
 
     --cached     Compare to the index rather than the working tree.
 

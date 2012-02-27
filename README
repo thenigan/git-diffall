@@ -18,7 +18,7 @@ range of revisions to diff:
      containing and up to the second, starting at a common ancestor
      of both <commit>
 
-Note: all forms take an optional path limiter [--] [<path>*]
+Note: all forms take an optional path limiter [-- <path>*]
 
 The '--extcmd=<command>' option allows the user to specify a custom
 command for viewing diffs.  When given, configured defaults are
