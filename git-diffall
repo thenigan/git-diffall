@@ -204,8 +204,8 @@ then
 	done < "$tmp/filelist"
 else
 	# Mac users have gnutar rather than tar
-	(tar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && tar -x)) || {
-		gnutar --ignore-failed-read -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && gnutar -x)
+	(tar --ignore-failed-read --exclude-vcs -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && tar -x)) || {
+		gnutar --ignore-failed-read --exclude-vcs -c -T "$tmp/filelist" | (cd "$tmp/$right_dir" && gnutar -x)
 	}
 fi
 
