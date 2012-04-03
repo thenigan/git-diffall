@@ -113,11 +113,19 @@ sub setup_dir_diff
 	# change in the recorded SHA1 for the submodule.
 	foreach my $path (keys %submodule) {
 		if (defined $submodule{$path}{left}) {
+			my $dir = dirname($path);
+			unless (-d "$ldir/$dir") {
+				mkpath("$ldir/$dir") or die $!;
+			}
 			open(my $fh, ">", "$ldir/$path") or die $!;
 			print($fh "Subproject commit $submodule{$path}{left}");
 			close($fh);
 		}
 		if (defined $submodule{$path}{right}) {
+			my $dir = dirname($path);
+			unless (-d "$rdir/$dir") {
+				mkpath("$rdir/$dir") or die $!;
+			}
 			open(my $fh, ">", "$rdir/$path") or die $!;
 			print($fh "Subproject commit $submodule{$path}{right}");
 			close($fh);
