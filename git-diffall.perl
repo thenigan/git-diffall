@@ -64,7 +64,11 @@ sub setup_dir_diff
 
 		if (($lmode eq $submodule_mode) or ($rmode eq $submodule_mode)) {
 			$submodule{$path}{left} = $lsha1;
-			$submodule{$path}{right} = $rsha1;
+			if ($lsha1 ne $rsha1) {
+				$submodule{$path}{right} = $rsha1;
+			} else {
+				$submodule{$path}{right} = "$rsha1-dirty";
+			}
 			next;
 		}
 
