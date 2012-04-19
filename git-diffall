@@ -252,6 +252,10 @@ then
 	find "$tmp/$right_dir" -type f |
 	while read file
 	do
-		cp "$file" "$git_top_dir/${file#$tmp/$right_dir/}"
+		copy_target="$git_top_dir/${file#$tmp/$right_dir/}"
+		diff -pN "$copy_target" "$file"
+		if [ $? -ne 0 ]; then
+		  cp "$file" "$copy_target"
+		fi
 	done
 fi
