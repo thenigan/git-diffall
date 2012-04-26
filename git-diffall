@@ -253,9 +253,17 @@ then
 	while read file
 	do
 		copy_target="$git_top_dir/${file#$tmp/$right_dir/}"
-		diff -pN "$copy_target" "$file"
-		if [ $? -ne 0 ]; then
-		  cp "$file" "$copy_target"
+		if test -f "$copy_target"
+		then 
+			diff -p "$copy_target" "$file"
+			should_cp=$?
+		else
+			echo "copy-back: $copy_target: Missing file is copied back"
+			should_cp=1
+		fi
+		if test $should_cp -ne 0 
+		then
+			cp "$file" "$copy_target"
 		fi
 	done
 fi
