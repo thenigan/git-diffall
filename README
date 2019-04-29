@@ -29,3 +29,7 @@ This script is based on an example provided by Thomas Rast on the
 Git list [1]:
 
 [1] http://thread.gmane.org/gmane.comp.version-control.git/124807
+
+Note: The functionality provided by git-diffall has been contributed to Git
+itself and can be accessed through the "git difftool --dir-diff" command
+in Git versions v1.7.11 and newer.
