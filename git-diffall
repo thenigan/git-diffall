@@ -221,7 +221,8 @@ do
 		if test -e "$name"
 		then
 			mkdir -p "$tmp/$right_dir/$(dirname "$name")"
-			cp "$name" "$tmp/$right_dir/$name"
+			# cp "$name" "$tmp/$right_dir/$name"
+			ln -s "$start_dir/$name" "$tmp/$right_dir/$name"
 		fi
 	fi
 done < "$tmp/filelist"
