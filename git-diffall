@@ -20,7 +20,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
+# https://github.com/gfa99/git-diffall
 # Perform a directory diff between commits in the repository using
 # the external diff or merge tool specified in the user's config.
 
@@ -261,6 +261,10 @@ then
 	export BASE
 	eval $diff_tool '"$LOCAL"' '"$REMOTE"'
 else
+	type initialize_merge_tool >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		initialize_merge_tool "$merge_tool"
+	fi
 	run_merge_tool "$merge_tool" false
 fi
 
